@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.schemas import VehicleCreate, VehicleOut
+from app.schemas import VehicleCreate
 
-app = FastAPI()
+app = FastAPI(title="Project Godzilla API")
 
 @app.get("/")
 async def root():
