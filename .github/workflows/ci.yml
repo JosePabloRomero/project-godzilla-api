@@ -23,9 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install ruff
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install ruff; fi
 
       - name: Lint with ruff
         run: ruff check .
@@ -46,12 +44,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install pytest; fi
 
       - name: Run tests
-        run: pytest -q
+        run: python -m pytest -q
 
   coverage:
     name: coverage
@@ -69,9 +65,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest pytest-cov
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install pytest pytest-cov; fi
 
       - name: Run coverage
-        run: pytest -q --cov=. --cov-report=term-missing
+        run: python -m pytest -q --cov=app --cov-report=term-missing
