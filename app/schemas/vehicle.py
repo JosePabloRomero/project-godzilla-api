@@ -8,6 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class VehicleBase(BaseModel):
+    """Base schema for a vehicle"""
+
     make: str = Field(..., min_length=1, max_length=50, examples=["Nissan"])
     model: str = Field(..., min_length=1, max_length=80, examples=["Skyline GT-R R34"])
     year: int = Field(..., ge=1950, le=2050, examples=[1999])
