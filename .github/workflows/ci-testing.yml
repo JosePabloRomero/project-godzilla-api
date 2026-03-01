@@ -7,8 +7,8 @@ on:
     branches: [develop]
 
 jobs:
-  lint:
-    name: lint
+  lint_testing:
+    name: lint_testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +28,8 @@ jobs:
       - name: Lint with ruff
         run: ruff check .
 
-  tests:
-    name: tests
+  tests_testing:
+    name: tests_testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,8 +49,8 @@ jobs:
       - name: Run tests
         run: python -m pytest -q
 
-  coverage:
-    name: coverage
+  coverage_testing:
+    name: coverage_testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
   deploy_testing:
     name: deploy_testing
     runs-on: ubuntu-latest
-    needs: [lint, tests, coverage]
+    needs: [lint_testing, tests_testing, coverage_testing]
     environment: testing
     steps:
       - uses: actions/checkout@v4
