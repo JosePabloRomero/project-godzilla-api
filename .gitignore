@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+.python-version
 
 # IDEs / editors
 .vscode/
