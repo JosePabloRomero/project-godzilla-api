@@ -19,6 +19,7 @@ class ModBase(BaseModel):
 
 class ModCreate(ModBase):
     """Payload for mod creation."""
+
     pass
 
 
@@ -27,6 +28,7 @@ class ModUpdate(BaseModel):
     Payload for updates (PATCH/PUT).
     All fields optional.
     """
+
     vehicle_id: Optional[UUID] = None
     name: Optional[str] = Field(None, min_length=1, max_length=80)
     category: Optional[str] = Field(None, max_length=30)
