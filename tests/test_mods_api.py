@@ -1,16 +1,12 @@
 """Tests for /api/v1/mods endpoints (FastAPI TestClient)."""
 
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
+import uuid
 
 VEHICLES_BASE = "/api/v1/vehicles"
 MODS_BASE = "/api/v1/mods"
 
 
-def test_create_vehicle_then_create_mod_201():
+def test_create_vehicle_then_create_mod_201(client):
     """Create vehicle -> create valid mod -> 201."""
     v = client.post(
         VEHICLES_BASE,
@@ -40,10 +36,8 @@ def test_create_vehicle_then_create_mod_201():
     assert r.headers.get("Location") == f"/api/v1/mods/{data['id']}"
 
 
-def test_create_mod_with_nonexistent_vehicle_id_404():
+def test_create_mod_with_nonexistent_vehicle_id_404(client):
     """Create mod with non-existent vehicle_id -> 404."""
-    import uuid
-
     fake_id = str(uuid.uuid4())
     mod_payload = {
         "vehicle_id": fake_id,
@@ -55,7 +49,7 @@ def test_create_mod_with_nonexistent_vehicle_id_404():
     assert r.status_code == 404
 
 
-def test_list_mods_with_vehicle_id_filter():
+def test_list_mods_with_vehicle_id_filter(client):
     """List mods with ?vehicle_id= returns only that vehicle's mods."""
     v1 = client.post(VEHICLES_BASE, json={"make": "A", "model": "M1", "year": 2000})
     v2 = client.post(VEHICLES_BASE, json={"make": "B", "model": "M2", "year": 2001})
