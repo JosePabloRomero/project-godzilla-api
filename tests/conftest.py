@@ -1,4 +1,6 @@
-"""Shared fixtures for API tests using a temporary SQLite database."""
+"""Shared fixtures for API tests (Postgres via DATABASE_URL or temp SQLite)."""
+
+import os
 
 import pytest
 from fastapi.testclient import TestClient
@@ -9,15 +11,20 @@ from app.db import get_db
 from app.main import app
 from app.models import Base, Mod, ServiceRecord, Vehicle
 
+_DATABASE_URL = os.environ.get("DATABASE_URL")
+
 
 @pytest.fixture(scope="session")
 def _engine(tmp_path_factory):
-    db_path = tmp_path_factory.mktemp("data") / "test.db"
-    engine = create_engine(
-        f"sqlite+pysqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
-    )
-    Base.metadata.create_all(bind=engine)
+    if _DATABASE_URL:
+        engine = create_engine(_DATABASE_URL)
+    else:
+        db_path = tmp_path_factory.mktemp("data") / "test.db"
+        engine = create_engine(
+            f"sqlite+pysqlite:///{db_path}",
+            connect_args={"check_same_thread": False},
+        )
+        Base.metadata.create_all(bind=engine)
     yield engine
     engine.dispose()
 
@@ -36,11 +43,13 @@ def _session_factory(_engine):
 def db_session(_session_factory):
     """Provide a clean DB state for every test."""
     session = _session_factory()
-    session.execute(delete(ServiceRecord))
-    session.execute(delete(Mod))
-    session.execute(delete(Vehicle))
-    session.commit()
-    session.close()
+    try:
+        session.execute(delete(ServiceRecord))
+        session.execute(delete(Mod))
+        session.execute(delete(Vehicle))
+        session.commit()
+    finally:
+        session.close()
 
 
 @pytest.fixture(scope="session", autouse=True)
