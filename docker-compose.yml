@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: godzilla
+      POSTGRES_PASSWORD: godzilla
+      POSTGRES_DB: godzilla
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: "postgresql+psycopg://godzilla:godzilla@db:5432/godzilla"
+      PYTHONPATH: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: ["sh", "scripts/entrypoint.sh"]
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

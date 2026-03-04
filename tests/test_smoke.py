@@ -4,6 +4,7 @@ import pytest
 def _import_app():
     try:
         from app.main import app
+
         return app, "app.main", None
     except Exception as e:
         return None, None, e
@@ -11,10 +12,7 @@ def _import_app():
 
 def test_app_importable():
     app, source, err = _import_app()
-    assert app is not None, (
-        "No se pudo importar 'app' desde 'app.main'. "
-        f"Error: {err}"
-    )
+    assert app is not None, f"No se pudo importar 'app' desde 'app.main'. Error: {err}"
 
 
 def test_app_has_routes():
@@ -28,3 +26,10 @@ def test_app_has_routes():
         f"El objeto 'app' importado desde '{source}' no tiene atributo 'routes'."
         f"Error: {err}"
     )
+
+
+def test_root_returns_welcome(client):
+    """GET / -> 200 with welcome message."""
+    r = client.get("/")
+    assert r.status_code == 200
+    assert r.json()["message"] == "Welcome to the JDM Garage API!"
