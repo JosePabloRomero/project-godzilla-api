@@ -85,3 +85,25 @@ docker run --rm -p 8000:8000 project-godzilla-api:local
 ```
 
 ---
+
+## Run with Docker Compose
+
+Start Postgres + API (with auto-migrations) in one command:
+
+```bash
+make docker-up
+```
+
+or directly:
+
+```bash
+docker compose up --build
+```
+
+Stop everything:
+
+```bash
+make docker-down
+```
+
+---
