@@ -9,7 +9,6 @@ from sqlalchemy import engine_from_config, pool
 
 from app.db.base import Base
 from app.db.session import DATABASE_URL
-import app.models  # noqa: F401  – ensure all models are registered on Base
 
 config = context.config
 if config.config_file_name is not None:
