@@ -1,4 +1,4 @@
-.PHONY: install lint test cov-testing cov-production run docker-build docker-run
+.PHONY: install lint test cov-testing cov-production run docker-build docker-run docker-up docker-down db-migrate
 
 install:
 	pip install -r requirements-dev.txt
@@ -23,3 +23,12 @@ docker-build:
 
 docker-run:
 	docker run --rm -p 8000:8000 project-godzilla-api:local
+
+docker-up:
+	docker compose up --build
+
+docker-down:
+	docker compose down
+
+db-migrate:
+	docker compose run --rm api alembic upgrade head
