@@ -31,6 +31,25 @@ jobs:
   tests_production:
     name: tests_production
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: godzilla
+          POSTGRES_PASSWORD: godzilla
+          POSTGRES_DB: godzilla
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U godzilla -d godzilla"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://godzilla:godzilla@localhost:5432/godzilla
+
     steps:
       - uses: actions/checkout@v4
 
@@ -46,12 +65,37 @@ jobs:
         run: |
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install pytest; fi
 
+      - name: Wait for DB
+        run: python scripts/wait_for_db.py
+
+      - name: Run migrations
+        run: alembic upgrade head
+
       - name: Run tests
         run: python -m pytest -q
 
   coverage_production:
     name: coverage_production
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: godzilla
+          POSTGRES_PASSWORD: godzilla
+          POSTGRES_DB: godzilla
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd "pg_isready -U godzilla -d godzilla"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://godzilla:godzilla@localhost:5432/godzilla
+
     steps:
       - uses: actions/checkout@v4
 
@@ -66,6 +110,12 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; else pip install pytest pytest-cov; fi
+
+      - name: Wait for DB
+        run: python scripts/wait_for_db.py
+
+      - name: Run migrations
+        run: alembic upgrade head
 
       - name: Run coverage (quality gate >= 85%)
         run: python -m pytest -q --cov=app --cov-report=term-missing --cov-fail-under=85
