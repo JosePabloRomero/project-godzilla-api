@@ -1,16 +1,12 @@
 """Tests for /api/v1/service-records endpoints (FastAPI TestClient)."""
 
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
+import uuid
 
 VEHICLES_BASE = "/api/v1/vehicles"
 SERVICE_RECORDS_BASE = "/api/v1/service-records"
 
 
-def test_create_vehicle_then_create_service_record_201():
+def test_create_vehicle_then_create_service_record_201(client):
     """Create vehicle -> create service record -> 201."""
     v = client.post(
         VEHICLES_BASE,
@@ -41,10 +37,8 @@ def test_create_vehicle_then_create_service_record_201():
     assert r.headers.get("Location") == f"/api/v1/service-records/{data['id']}"
 
 
-def test_create_service_record_with_nonexistent_vehicle_id_404():
+def test_create_service_record_with_nonexistent_vehicle_id_404(client):
     """Create service record with non-existent vehicle_id -> 404."""
-    import uuid
-
     fake_id = str(uuid.uuid4())
     record_payload = {
         "vehicle_id": fake_id,

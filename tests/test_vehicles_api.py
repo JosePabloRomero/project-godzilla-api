@@ -1,15 +1,9 @@
 """Tests for /api/v1/vehicles endpoints (FastAPI TestClient)."""
 
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
 BASE = "/api/v1/vehicles"
 
 
-def test_create_vehicle_201_then_get_200():
+def test_create_vehicle_201_then_get_200(client):
     """Create vehicle -> 201, then get by id -> 200."""
     payload = {
         "make": "Nissan",
@@ -33,14 +27,14 @@ def test_create_vehicle_201_then_get_200():
     assert r2.json()["id"] == data["id"]
 
 
-def test_list_vehicles_200():
+def test_list_vehicles_200(client):
     """List vehicles -> 200."""
     r = client.get(BASE)
     assert r.status_code == 200
     assert isinstance(r.json(), list)
 
 
-def test_patch_vehicle_200_changes_nickname():
+def test_patch_vehicle_200_changes_nickname(client):
     """Patch vehicle -> 200 and nickname changes."""
     payload = {"make": "Toyota", "model": "Supra", "year": 1998, "nickname": "Original"}
     r = client.post(BASE, json=payload)
@@ -52,7 +46,7 @@ def test_patch_vehicle_200_changes_nickname():
     assert r2.json()["nickname"] == "Updated"
 
 
-def test_delete_vehicle_204_then_get_404():
+def test_delete_vehicle_204_then_get_404(client):
     """Delete vehicle -> 204, then get -> 404."""
     payload = {"make": "Mazda", "model": "RX-7", "year": 1995}
     r = client.post(BASE, json=payload)
