@@ -1,5 +1,7 @@
 """Tests for /api/v1/vehicles endpoints (FastAPI TestClient)."""
 
+import uuid
+
 BASE = "/api/v1/vehicles"
 
 
@@ -58,3 +60,27 @@ def test_delete_vehicle_204_then_get_404(client):
 
     r3 = client.get(f"{BASE}/{vid}")
     assert r3.status_code == 404
+
+
+def test_get_vehicle_nonexistent_404(client):
+    """GET nonexistent vehicle -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.get(f"{BASE}/{fake_id}")
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Vehicle not found"
+
+
+def test_patch_vehicle_nonexistent_404(client):
+    """PATCH nonexistent vehicle -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.patch(f"{BASE}/{fake_id}", json={"nickname": "Ghost"})
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Vehicle not found"
+
+
+def test_delete_vehicle_nonexistent_404(client):
+    """DELETE nonexistent vehicle -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.delete(f"{BASE}/{fake_id}")
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Vehicle not found"

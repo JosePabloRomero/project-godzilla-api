@@ -47,6 +47,7 @@ def test_create_mod_with_nonexistent_vehicle_id_404(client):
     }
     r = client.post(MODS_BASE, json=mod_payload)
     assert r.status_code == 404
+    assert r.json()["detail"] == "Vehicle not found"
 
 
 def test_list_mods_with_vehicle_id_filter(client):
@@ -80,3 +81,51 @@ def test_list_mods_with_vehicle_id_filter(client):
     items = r.json()
     assert all(m["vehicle_id"] == id1 for m in items)
     assert len(items) >= 1
+
+
+def test_get_mod_nonexistent_404(client):
+    """GET nonexistent mod -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.get(f"{MODS_BASE}/{fake_id}")
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Mod not found"
+
+
+def test_delete_mod_nonexistent_404(client):
+    """DELETE nonexistent mod -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.delete(f"{MODS_BASE}/{fake_id}")
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Mod not found"
+
+
+def test_patch_mod_nonexistent_404(client):
+    """PATCH nonexistent mod -> 404."""
+    fake_id = str(uuid.uuid4())
+    r = client.patch(f"{MODS_BASE}/{fake_id}", json={"name": "Ghost"})
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Mod not found"
+
+
+def test_patch_mod_vehicle_id_nonexistent_404(client):
+    """PATCH mod with vehicle_id pointing to nonexistent vehicle -> 404."""
+    v = client.post(VEHICLES_BASE, json={"make": "Honda", "model": "S2000", "year": 2001})
+    assert v.status_code == 201
+    vid = v.json()["id"]
+
+    mod = client.post(
+        MODS_BASE,
+        json={
+            "vehicle_id": vid,
+            "name": "Exhaust",
+            "category": "exhaust",
+            "installed_at": "2022-01-01",
+        },
+    )
+    assert mod.status_code == 201
+    mod_id = mod.json()["id"]
+
+    fake_vehicle = str(uuid.uuid4())
+    r = client.patch(f"{MODS_BASE}/{mod_id}", json={"vehicle_id": fake_vehicle})
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Vehicle not found"

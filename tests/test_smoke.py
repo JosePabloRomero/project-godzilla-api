@@ -26,3 +26,10 @@ def test_app_has_routes():
         f"El objeto 'app' importado desde '{source}' no tiene atributo 'routes'."
         f"Error: {err}"
     )
+
+
+def test_root_returns_welcome(client):
+    """GET / -> 200 with welcome message."""
+    r = client.get("/")
+    assert r.status_code == 200
+    assert r.json()["message"] == "Welcome to the JDM Garage API!"
