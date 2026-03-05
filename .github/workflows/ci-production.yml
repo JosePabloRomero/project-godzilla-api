@@ -124,7 +124,7 @@ jobs:
     name: deploy_production
     runs-on: ubuntu-latest
     needs: [lint_production, tests_production, coverage_production]
-    environment: production
+    environment: productionn
     if: github.event_name == 'push'
     steps:
       - name: Trigger Render deploy (production)
