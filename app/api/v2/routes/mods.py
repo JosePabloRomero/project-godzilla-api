@@ -24,7 +24,7 @@ async def create_mod(
     db.add(obj)
     db.commit()
     db.refresh(obj)
-    response.headers["Location"] = f"/api/v1/mods/{obj.id}"
+    response.headers["Location"] = f"/api/v2/mods/{obj.id}"
     return obj
 
 

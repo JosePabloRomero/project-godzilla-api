@@ -1,8 +1,8 @@
-"""Tests for /api/v1/vehicles endpoints (FastAPI TestClient)."""
+"""Tests for /api/v2/vehicles endpoints (FastAPI TestClient)."""
 
 import uuid
 
-BASE = "/api/v1/vehicles"
+BASE = "/api/v2/vehicles"
 
 
 def test_create_vehicle_201_then_get_200(client):
@@ -22,7 +22,7 @@ def test_create_vehicle_201_then_get_200(client):
     assert data["nickname"] == "Godzilla"
     assert "id" in data
     assert "created_at" in data
-    assert r.headers.get("Location") == f"/api/v1/vehicles/{data['id']}"
+    assert r.headers.get("Location") == f"/api/v2/vehicles/{data['id']}"
 
     r2 = client.get(f"{BASE}/{data['id']}")
     assert r2.status_code == 200

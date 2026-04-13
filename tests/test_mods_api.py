@@ -1,9 +1,9 @@
-"""Tests for /api/v1/mods endpoints (FastAPI TestClient)."""
+"""Tests for /api/v2/mods endpoints (FastAPI TestClient)."""
 
 import uuid
 
-VEHICLES_BASE = "/api/v1/vehicles"
-MODS_BASE = "/api/v1/mods"
+VEHICLES_BASE = "/api/v2/vehicles"
+MODS_BASE = "/api/v2/mods"
 
 
 def test_create_vehicle_then_create_mod_201(client):
@@ -33,7 +33,7 @@ def test_create_vehicle_then_create_mod_201(client):
     assert data["name"] == "Racing Coilovers"
     assert "id" in data
     assert "created_at" in data
-    assert r.headers.get("Location") == f"/api/v1/mods/{data['id']}"
+    assert r.headers.get("Location") == f"/api/v2/mods/{data['id']}"
 
 
 def test_create_mod_with_nonexistent_vehicle_id_404(client):

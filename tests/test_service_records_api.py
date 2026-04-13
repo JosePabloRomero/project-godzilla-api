@@ -1,9 +1,9 @@
-"""Tests for /api/v1/service-records endpoints (FastAPI TestClient)."""
+"""Tests for /api/v2/service-records endpoints (FastAPI TestClient)."""
 
 import uuid
 
-VEHICLES_BASE = "/api/v1/vehicles"
-SERVICE_RECORDS_BASE = "/api/v1/service-records"
+VEHICLES_BASE = "/api/v2/vehicles"
+SERVICE_RECORDS_BASE = "/api/v2/service-records"
 
 
 def test_create_vehicle_then_create_service_record_201(client):
@@ -34,7 +34,7 @@ def test_create_vehicle_then_create_service_record_201(client):
     assert data["mileage"] == 120000
     assert "id" in data
     assert "created_at" in data
-    assert r.headers.get("Location") == f"/api/v1/service-records/{data['id']}"
+    assert r.headers.get("Location") == f"/api/v2/service-records/{data['id']}"
 
 
 def test_create_service_record_with_nonexistent_vehicle_id_404(client):

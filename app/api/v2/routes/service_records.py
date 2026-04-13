@@ -24,7 +24,7 @@ async def create_service_record(
     db.add(obj)
     db.commit()
     db.refresh(obj)
-    response.headers["Location"] = f"/api/v1/service-records/{obj.id}"
+    response.headers["Location"] = f"/api/v2/service-records/{obj.id}"
     return obj
 
 

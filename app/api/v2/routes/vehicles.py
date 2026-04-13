@@ -22,7 +22,7 @@ async def create_vehicle(
     db.add(obj)
     db.commit()
     db.refresh(obj)
-    response.headers["Location"] = f"/api/v1/vehicles/{obj.id}"
+    response.headers["Location"] = f"/api/v2/vehicles/{obj.id}"
     return obj
 
 
