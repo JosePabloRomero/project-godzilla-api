@@ -58,5 +58,5 @@ def test_integration_creates_default_vehicle_when_db_is_empty(client):
 
     assert data["api1_payload"]["solicitud"]["id"] == "s-1"
     assert data["vehicle"]["make"] == "Unknown"
-    assert data["vehicle"]["model"] == "Multicloud Relay"
-    assert data["vehicle"]["nickname"] == "Integration Seed"
+    assert data["vehicle"]["model"] == "Multicloud Car"
+    assert data["vehicle"]["nickname"] == "Integration Test Car"
