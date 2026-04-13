@@ -26,23 +26,9 @@ A simple RESTful API to manage a JDM garage:
 
 ## CI/CD & deployments
 - Deploys are triggered from GitHub Actions **only after** lint, tests, and coverage gates pass.
-- Testing deploy: `develop` → Render (Testing)
-- Production deploy: `main` → Render (Production)
+- `develop` and `main` currently run CI validation only (no cloud deploy step configured).
 
 Commits follow **GitMoji**.
-
-## 🌐 Deployed environments
-
-| Environment | Branch | URL |
-|:-----------:|:------:|:----|
-| **Testing** | `develop` | [https://project-godzilla-api-testing.onrender.com](https://project-godzilla-api-testing.onrender.com) |
-| **Production** | `main` | [https://project-godzilla-api-production.onrender.com](https://project-godzilla-api-production.onrender.com) |
-
-> 📖 **API docs (Swagger UI)** are available at `/docs` on each environment:
-> - Testing: [https://project-godzilla-api-testing.onrender.com/docs](https://project-godzilla-api-testing.onrender.com/docs)
-> - Production: [https://project-godzilla-api-production.onrender.com/docs](https://project-godzilla-api-production.onrender.com/docs)
-
----
 
 ## Local setup
 
