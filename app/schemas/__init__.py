@@ -6,6 +6,7 @@ from .service_record import (
     ServiceRecordOut,
     ServiceRecordUpdate,
 )
+from .multicloud_payload import MultiCloudPayload
 from .vehicle import VehicleBase, VehicleCreate, VehicleOut, VehicleUpdate
 
 __all__ = [
@@ -24,4 +25,6 @@ __all__ = [
     "ServiceRecordCreate",
     "ServiceRecordUpdate",
     "ServiceRecordOut",
+    # Integration
+    "MultiCloudPayload",
 ]
