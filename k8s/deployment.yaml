@@ -17,12 +17,16 @@ spec:
       containers:
         - name: godzilla-api
           image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
             - name: APP_ENV
-              value: "testing"
+              value: "production"
             - name: LOG_LEVEL
               value: "info"
             - name: DATABASE_URL
-              value: "postgresql+psycopg://user:password@db:5432/godzilla"
+              valueFrom:
+                secretKeyRef:
+                  name: godzilla-db-secret
+                  key: DATABASE_URL
