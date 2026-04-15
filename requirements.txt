@@ -1,6 +1,7 @@
 fastapi
 pydantic
 uvicorn[standard]
+sentry-sdk[fastapi]
 sqlalchemy>=2.0
 psycopg[binary]>=3.1
 alembic
