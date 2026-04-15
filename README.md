@@ -26,10 +26,24 @@ A simple RESTful API to manage a JDM garage:
 
 ## CI/CD & deployments
 - Deploys are triggered from GitHub Actions **only after** lint, tests, and coverage gates pass.
-- `develop` and `main` currently run CI validation only (no cloud deploy step configured).
+- Testing deploy: `develop` → **Google Kubernetes Engine (GKE)**
+- Production deploy: `main` → **Google Kubernetes Engine (GKE)**
 
 Commits follow **GitMoji**.
 
+## 🌐 Deployed environments (GCP)
+
+Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` region. The CI/CD pipeline uses GitHub Actions and Workload Identity Federation for secure, keyless authentication.
+
+| Environment | Branch | Infrastructure |
+|:-----------:|:------:|:---------------|
+| **Testing** | `develop` | GKE (`godzilla-cluster`) + Cloud SQL |
+| **Production** | `main` | GKE (`godzilla-cluster`) + Cloud SQL |
+
+> 📖 **API docs (Swagger UI)**:
+> Since we use a dynamic LoadBalancer, access the documentation via the External IP provided by Kubernetes:
+> - `http://<GKE_EXTERNAL_IP>/api/v2/docs`
+> *(Run `kubectl get service godzilla-api` to retrieve the current IP)*
 ## Local setup
 
 ### 1) Create a virtual env (recommended)
