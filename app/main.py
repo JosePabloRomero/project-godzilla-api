@@ -1,7 +1,19 @@
+import os
+
+import sentry_sdk
 from fastapi import FastAPI
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app.api.v1.router import api_router as api_v1_router
 from app.api.v2.router import api_router as api_v2_router
+
+sentry_dsn = os.getenv("SENTRY_DSN")
+if sentry_dsn:
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        integrations=[FastApiIntegration()],
+        traces_sample_rate=1.0,
+    )
 
 app = FastAPI(title="Project Godzilla API", version="2.0.0")
 
