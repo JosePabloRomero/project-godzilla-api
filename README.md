@@ -41,9 +41,14 @@ Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` regi
 | **Production** | `main` | GKE (`godzilla-cluster`) + Cloud SQL |
 
 > 📖 **API docs (Swagger UI)**:
-> Since we use a dynamic LoadBalancer, access the documentation via the External IP provided by Kubernetes:
-> - `http://<GKE_EXTERNAL_IP>/api/v2/docs`
-> *(Run `kubectl get service godzilla-api` to retrieve the current IP)*
+> - `http://34.21.77.119/api/v2/docs`
+
+## Multi-Cloud Architecture Diagram
+
+This diagram shows an end-to-end request/response flow across two cloud providers. The transaction starts in GCP (`API 1 - Origen`), is enriched in AWS (`API 2 - Intermedia`), and is completed in GCP (`API 3 - Terminal`) to return a final aggregated message (`Client + Podcast + Vehicle`) to the user. Telemetry is collected independently through Grafana/Prometheus for `API_1` and `API_2`, while `API_3` reports errors to Sentry.
+
+![Multi-cloud architecture diagram](./multicloud-architecture.png)
+
 ## Local setup
 
 ### 1) Create a virtual env (recommended)
