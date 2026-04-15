@@ -5,8 +5,17 @@ A simple RESTful API to manage a JDM garage:
 - **Mods**
 - **Service Records**
 
-> API base path: `/api/v1`  
-> Swagger UI: `/docs`
+Two mounted API surfaces share the same FastAPI app:
+
+| Version | Base path | What it includes |
+|:--------|:----------|:-----------------|
+| **v1** | `/api/v1` | Garage resources only (`vehicles`, `mods`, `service-records`). |
+| **v2** | `/api/v2` | Same garage resources **plus** the multicloud integration endpoint (see below). |
+
+**Swagger UI (per version):** `/api/v1/docs` · `/api/v2/docs`  
+The root app also exposes `/docs` at the top level; use **`/api/v2/docs`** for the multicloud flow and v2 routes.
+
+**Multicloud integration (v2 only):** `POST /api/v2/integration/multicloud` — accepts `cliente`, `podcast`, and optional `vehicle_id`, resolves or injects a **vehicle** in PostgreSQL, and returns the enriched payload (`cliente`, `podcast`, `vehicle`).
 
 ## Tech stack
 - FastAPI
@@ -40,10 +49,18 @@ Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` regi
 | **Testing** | `develop` | GKE (`godzilla-cluster`) + Cloud SQL |
 | **Production** | `main` | GKE (`godzilla-cluster`) + Cloud SQL |
 
-> 📖 **API docs (Swagger UI)**:
-> Since we use a dynamic LoadBalancer, access the documentation via the External IP provided by Kubernetes:
+> 📖 **API docs (Swagger UI)** — use **v2** for garage + multicloud:
 > - `http://<GKE_EXTERNAL_IP>/api/v2/docs`
-> *(Run `kubectl get service godzilla-api` to retrieve the current IP)*
+> *(Run `kubectl get service godzilla-api` to retrieve the current IP; replace `<GKE_EXTERNAL_IP>` accordingly.)*
+
+## Multi-Cloud Architecture Diagram
+
+This diagram shows an end-to-end request/response flow across two cloud providers. The transaction starts in GCP (`API 1 - Origen`), is enriched in AWS (`API 2 - Intermedia`), and is completed in GCP (`API 3 - Terminal`) to return a final aggregated message (`Client + Podcast + Vehicle`) to the user. Telemetry is collected independently through Grafana/Prometheus for `API_1` and `API_2`, while `API_3` reports errors to Sentry.
+
+In this repository, the **terminal** enrichment step is implemented under **`/api/v2`** via `POST /api/v2/integration/multicloud` (see Swagger at `/api/v2/docs`).
+
+![Multi-cloud architecture diagram](./multicloud-architecture.png)
+
 ## Local setup
 
 ### 1) Create a virtual env (recommended)
@@ -64,7 +81,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 Open:
 - `http://localhost:8000/` (welcome message)
-- `http://localhost:8000/docs`
+- `http://localhost:8000/api/v1/docs` · `http://localhost:8000/api/v2/docs` (Swagger; **v2** for multicloud)
 
 ---
 
@@ -110,7 +127,7 @@ docker compose up --build
 
 This starts **PostgreSQL** and the **API** with auto-migrations. Once running, open:
 - `http://0.0.0.0:8000/` (welcome message)
-- `http://0.0.0.0:8000/docs` (Swagger UI)
+- `http://0.0.0.0:8000/api/v2/docs` (Swagger UI — **v2** includes multicloud integration)
 
 Stop everything:
 
