@@ -1,0 +1,21 @@
+project_id             = "tu-proyecto-gcp"
+region                 = "us-east4"
+zone                   = "us-east4-a"
+environment            = "prod"
+
+vpc_name               = "godzilla-vpc"
+subnet_name            = "godzilla-subnet-us-east4"
+subnet_cidr            = "10.10.0.0/20"
+
+pods_secondary_range_name     = "gke-pods-range"
+pods_secondary_cidr           = "10.20.0.0/16"
+services_secondary_range_name = "gke-services-range"
+services_secondary_cidr       = "10.30.0.0/20"
+
+gke_cluster_name       = "godzilla-cluster"
+
+db_instance_name       = "godzilla-postgres"
+db_name                = "godzilla_db"
+db_user                = "godzilla_user"
+
+bastion_instance_name  = "godzilla-bastion"
