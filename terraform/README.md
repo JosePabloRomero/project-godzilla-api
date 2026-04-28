@@ -1,28 +1,32 @@
 # Terraform IaC - Project Godzilla API
 
-Este directorio contiene la Infraestructura como Codigo (IaC) para GCP usando un patron modular por servicio y un entorno `prod`.
+Este directorio contiene la Infraestructura como Código (IaC) para GCP usando un patrón modular por servicio y un entorno `prod`.
 
-## Estructura
+## Estructura Modular
 
-- `modules/`: modulos reutilizables por servicio (`network`, `gke`, `database`, `bastion`).
-- `environments/prod/`: composicion del entorno productivo usando los modulos.
-- `scripts/sql/`: scripts SQL de inicializacion, carga de datos y limpieza.
-- `scripts/run_sql.sh`: orquestador para ejecutar scripts SQL en orden.
+- `modules/network/`: VPC custom, subredes, Cloud Router y NAT.
+- `modules/gke/`: Clúster administrado GKE Autopilot.
+- `modules/database/`: Cloud SQL for PostgreSQL 18 (IP privada) y Service Networking.
+- `modules/bastion/`: Instancia Compute Engine para acceso seguro a la base de datos vía IAP.
+- `environments/prod/`: Composición del entorno productivo unificando los módulos.
+- `scripts/sql/`: Scripts de inicialización, inserción (mock data) y destrucción (teardown).
+- `scripts/run_sql.sh`: Orquestador Bash que abre un túnel SSH/IAP hacia la BD privada.
 
 ## Prerrequisitos
 
 - Terraform `>= 1.6`
-- Google Cloud SDK (`gcloud`) autenticado
-- Proyecto GCP con APIs habilitadas:
+- Google Cloud SDK (`gcloud`) instalado y autenticado (`gcloud auth login` y `gcloud auth application-default login`)
+- La cuenta de GCP usada para operar debe tener el rol `IAP-secured Tunnel User`
+- Proyecto GCP con las siguientes APIs habilitadas:
   - Compute Engine API
   - Kubernetes Engine API
   - Cloud SQL Admin API
   - Service Networking API
+  - Identity-Aware Proxy (IAP) API
 
-## Configuracion inicial
+## Despliegue de la Infraestructura
 
-1. Ir al entorno:
-
+1. Posiciónate en el entorno productivo:
 ```bash
 cd terraform/environments/prod
 ```
@@ -64,18 +68,19 @@ terraform apply tfplan
 Destruir:
 
 ```bash
-terraform destroy
+terraform destroy -auto-approve
 ```
 
 ## Scripts SQL
 
-Desde la raiz del repositorio:
+El script `terraform/scripts/run_sql.sh` ahora levanta un tunel SSH por IAP hacia el Bastion Host y desde ahi se conecta a la IP privada de Cloud SQL.
+
+Desde la raiz del repositorio, usa estos comandos:
 
 ```bash
 chmod +x terraform/scripts/run_sql.sh
-./terraform/scripts/run_sql.sh init
-./terraform/scripts/run_sql.sh seed
-./terraform/scripts/run_sql.sh teardown
+./terraform/scripts/run_sql.sh init --project-id <TU_PROJECT_ID> --db-user godzilla_user
+./terraform/scripts/run_sql.sh teardown --project-id <TU_PROJECT_ID> --db-user godzilla_user
 ```
 
-El script usa variables de entorno estandar de PostgreSQL (`PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`).
+Nota tecnica: en modo `teardown`, el script se conecta por defecto a la base `postgres` para poder ejecutar el `DROP DATABASE` sin errores por conexiones activas sobre la base objetivo.
