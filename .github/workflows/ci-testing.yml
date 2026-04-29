@@ -132,7 +132,9 @@ jobs:
     env:
       PROJECT_ID: godzilla-api-k8s
       REGION: us-east4
-      CLUSTER: godzilla-cluster
+      # Entrega #2: CLUSTER: godzilla-cluster
+      # Entrega #3:
+      CLUSTER: godzilla-cluster-v3
       REPO: godzilla-repo
       WIF_PROVIDER: projects/513133596270/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
       SA_EMAIL: github-actions-deployer@godzilla-api-k8s.iam.gserviceaccount.com

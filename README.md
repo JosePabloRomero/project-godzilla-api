@@ -22,12 +22,14 @@ The root app also exposes `/docs` at the top level; use **`/api/v2/docs`** for t
 - Pydantic
 - SQLAlchemy (ORM)
 - Alembic (migrations)
-- PostgreSQL (Render)
+- Google Cloud Platform (GCP)
+- Google Kubernetes Engine (GKE Autopilot)
+- Cloud SQL for PostgreSQL 18
+- Artifact Registry
 - Pytest (+ pytest-cov)
 - Ruff
 - Docker (Dockerfile + Compose)
 - GitHub Actions (CI/CD)
-- Render (PaaS)
 
 ## Branching & environments
 - `develop` → **testing** environment (quality gate: **>= 60%** coverage)
@@ -46,8 +48,8 @@ Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` regi
 
 | Environment | Branch | Infrastructure |
 |:-----------:|:------:|:---------------|
-| **Testing** | `develop` | GKE (`godzilla-cluster`) + Cloud SQL |
-| **Production** | `main` | GKE (`godzilla-cluster`) + Cloud SQL |
+| **Testing** | `develop` | GCP `us-east4`: GKE Autopilot (`godzilla-cluster`) + Cloud SQL PostgreSQL 18 + Artifact Registry |
+| **Production** | `main` | GCP `us-east4`: GKE Autopilot (`godzilla-cluster`) + Cloud SQL PostgreSQL 18 + Artifact Registry |
 
 > 📖 **API docs (Swagger UI)** — use **v2** for garage + multicloud:
 > - `http://<GKE_EXTERNAL_IP>/api/v2/docs`
