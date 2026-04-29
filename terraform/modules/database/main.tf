@@ -29,6 +29,7 @@ resource "google_sql_database_instance" "postgres" {
   settings {
     tier              = "db-f1-micro"
     availability_type = "ZONAL"
+    edition           = "ENTERPRISE"
 
     ip_configuration {
       ipv4_enabled    = false

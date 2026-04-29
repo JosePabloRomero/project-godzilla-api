@@ -8,9 +8,7 @@ resource "google_container_cluster" "autopilot" {
 
   deletion_protection = false
 
-  autopilot {
-    enabled = true
-  }
+  enable_autopilot = true
 
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_secondary_range_name
