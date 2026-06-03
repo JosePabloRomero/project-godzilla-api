@@ -130,14 +130,14 @@ jobs:
     needs: coverage_production
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     env:
-      PROJECT_ID: godzilla-api-k8s
+      PROJECT_ID: project-godzilla-api-k8s
       REGION: us-east4
       CLUSTER: godzilla-api-cluster
       REPO: godzilla-repo
-      WIF_PROVIDER: projects/513133596270/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-      SA_EMAIL: github-actions-deployer@godzilla-api-k8s.iam.gserviceaccount.com
+      WIF_PROVIDER: projects/669925701659/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+      SA_EMAIL: github-actions-deployer@project-godzilla-api-k8s.iam.gserviceaccount.com
       DOCKER_REGISTRY: us-east4-docker.pkg.dev
-      IMAGE_NAME: us-east4-docker.pkg.dev/godzilla-api-k8s/godzilla-repo/godzilla-api
+      IMAGE_NAME: us-east4-docker.pkg.dev/project-godzilla-api-k8s/godzilla-repo/godzilla-api
 
     steps:
       - uses: actions/checkout@v4
