@@ -37,7 +37,17 @@ async def v2_root():
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the JDM Garage API!"}
+    channel = os.getenv("RELEASE_CHANNEL", "stable")
+    version = os.getenv("APP_VERSION", "1.0.0")
+    response = {
+        "message": "Welcome to the JDM Garage API!",
+        "channel": channel,
+        "version": version,
+    }
+    if channel == "canary":
+        response["message"] = "Welcome to the JDM Garage API - Canary Preview!"
+        response["preview_feature"] = "Canary deployment validation"
+    return response
 
 
 @app.get("/health")
