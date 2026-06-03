@@ -22,12 +22,14 @@ The root app also exposes `/docs` at the top level; use **`/api/v2/docs`** for t
 - Pydantic
 - SQLAlchemy (ORM)
 - Alembic (migrations)
-- PostgreSQL (Render)
+- Google Cloud Platform (GCP)
+- Google Kubernetes Engine (GKE Autopilot)
+- Cloud SQL for PostgreSQL 18
+- Artifact Registry
 - Pytest (+ pytest-cov)
 - Ruff
 - Docker (Dockerfile + Compose)
 - GitHub Actions (CI/CD)
-- Render (PaaS)
 
 ## Branching & environments
 - `develop` → **testing** environment (quality gate: **>= 60%** coverage)
@@ -35,7 +37,7 @@ The root app also exposes `/docs` at the top level; use **`/api/v2/docs`** for t
 
 ## CI/CD & deployments
 - Deploys are triggered from GitHub Actions **only after** lint, tests, and coverage gates pass.
-- Testing deploy: `develop` → **Google Kubernetes Engine (GKE)**
+- Testing (`develop`): lint, tests, and coverage only — **no deploy to GKE**.
 - Production deploy: `main` → **Google Kubernetes Engine (GKE)**
 
 Commits follow **GitMoji**.
@@ -46,12 +48,26 @@ Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` regi
 
 | Environment | Branch | Infrastructure |
 |:-----------:|:------:|:---------------|
-| **Testing** | `develop` | GKE (`godzilla-cluster`) + Cloud SQL |
-| **Production** | `main` | GKE (`godzilla-cluster`) + Cloud SQL |
+| **Testing** | `develop` | CI only (lint, tests, coverage gate >= 60%) |
+| **Production** | `main` | GCP `us-east4`: GKE Autopilot (`godzilla-api-cluster`) + Cloud SQL PostgreSQL 18 + Artifact Registry |
 
 > 📖 **API docs (Swagger UI)** — use **v2** for garage + multicloud:
 > - `http://<GKE_EXTERNAL_IP>/api/v2/docs`
 > *(Run `kubectl get service godzilla-api` to retrieve the current IP; replace `<GKE_EXTERNAL_IP>` accordingly.)*
+
+## Canary Deployment
+
+In production the API runs on Kubernetes as two Deployments—`godzilla-api-stable` and `godzilla-api-canary`—that share the `godzilla-api` Service. Both route traffic to Pods selected by the common label `app: godzilla-api`.
+
+Call `GET /health` to tell whether a response came from the **stable** or **canary** release (see the `channel` field in the JSON).
+
+```bash
+kubectl get svc godzilla-api
+curl http://<EXTERNAL-IP>/health
+kubectl get pods -l app=godzilla-api --show-labels
+```
+
+Infrastructure is provisioned with Terraform; application deploys run from GitHub Actions on push to `main`.
 
 ## Multi-Cloud Architecture Diagram
 

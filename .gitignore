@@ -10,3 +10,18 @@ htmlcov/
 # IDEs / editors
 .vscode/
 .cursor/
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+tfplan
+tfplan.*
+*.tfplan
+
+# Postman
+postman/
