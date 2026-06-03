@@ -132,9 +132,7 @@ jobs:
     env:
       PROJECT_ID: godzilla-api-k8s
       REGION: us-east4
-      # Entrega #2: CLUSTER: godzilla-cluster
-      # Entrega #3:
-      CLUSTER: godzilla-cluster-v3
+      CLUSTER: godzilla-api-cluster
       REPO: godzilla-repo
       WIF_PROVIDER: projects/513133596270/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
       SA_EMAIL: github-actions-deployer@godzilla-api-k8s.iam.gserviceaccount.com
@@ -168,6 +166,8 @@ jobs:
       - name: Deploy to GKE
         run: |
           IMAGE_TAG="${IMAGE_NAME}:${GITHUB_SHA}"
-          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment.yaml
+          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment-stable.yaml
+          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment-canary.yaml
+          kubectl delete deployment godzilla-api --ignore-not-found=true
           kubectl apply -f k8s/
 
