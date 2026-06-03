@@ -1,19 +1,9 @@
 import os
 
-import sentry_sdk
 from fastapi import FastAPI
-from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app.api.v1.router import api_router as api_v1_router
 from app.api.v2.router import api_router as api_v2_router
-
-sentry_dsn = os.getenv("SENTRY_DSN")
-if sentry_dsn:
-    sentry_sdk.init(
-        dsn=sentry_dsn,
-        integrations=[FastApiIntegration()],
-        traces_sample_rate=1.0,
-    )
 
 app = FastAPI(title="Project Godzilla API", version="2.0.0")
 
@@ -50,7 +40,15 @@ async def root():
     return {"message": "Welcome to the JDM Garage API!"}
 
 
-@app.get("/sentry-debug")
-async def sentry_debug():
-    division_by_zero = 1 / 0
-    return {"result": division_by_zero}
+@app.get("/health")
+async def health():
+    return {
+        "status": "ok",
+        "app": "project-godzilla-api",
+        "channel": os.getenv("RELEASE_CHANNEL", "stable"),
+        "version": os.getenv("APP_VERSION", "1.0.0"),
+        "environment": os.getenv("APP_ENV", "local"),
+        "git_sha": os.getenv("GIT_SHA", "local"),
+        "deploy_date": os.getenv("DEPLOY_DATE", "local"),
+        "visible_change": os.getenv("VISIBLE_CHANGE", "Stable release"),
+    }
