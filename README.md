@@ -57,14 +57,41 @@ Our API is deployed on **Google Kubernetes Engine (GKE)** in the `us-east4` regi
 
 ## Canary Deployment
 
-In production the API runs on Kubernetes as two Deployments—`godzilla-api-stable` and `godzilla-api-canary`—that share the `godzilla-api` Service. Both route traffic to Pods selected by the common label `app: godzilla-api`.
+In production there are two Deployments: `godzilla-api-stable` and `godzilla-api-canary`. Both share the `godzilla-api` Service, which routes traffic to Pods with the common label `app: godzilla-api`. The release is distinguished by `version: stable` or `version: canary`. Traffic split is approximate and depends on replica counts (for example, 3 stable and 1 canary).
 
-Call `GET /health` to tell whether a response came from the **stable** or **canary** release (see the `channel` field in the JSON).
+To validate with Postman or curl, get the external IP and hit the endpoints:
 
 ```bash
 kubectl get svc godzilla-api
+```
+
+```bash
 curl http://<EXTERNAL-IP>/health
+```
+
+`GET /health` returns `channel`, `deploy_date`, and `git_sha` so you can tell whether the response came from stable or canary. `GET /` shows the visible Canary change when the request lands on canary (preview message).
+
+```bash
+curl http://<EXTERNAL-IP>/
+```
+
+To observe multiple responses alternating between stable and canary:
+
+```bash
+for i in {1..15}; do curl -s http://<EXTERNAL-IP>/health; echo; done
+```
+
+Pods and labels:
+
+```bash
 kubectl get pods -l app=godzilla-api --show-labels
+```
+
+Logs by version:
+
+```bash
+kubectl logs -l app=godzilla-api,version=stable --tail=50
+kubectl logs -l app=godzilla-api,version=canary --tail=50
 ```
 
 Infrastructure is provisioned with Terraform; application deploys run from GitHub Actions on push to `main`.
