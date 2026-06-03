@@ -7,7 +7,7 @@ TF_ENV_DIR="${SCRIPT_DIR}/../environments/prod"
 
 ACTION=""
 PROJECT_ID="${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}"
-BASTION_INSTANCE="${BASTION_INSTANCE:-godzilla-bastion-v3}"
+BASTION_INSTANCE="${BASTION_INSTANCE:-godzilla-bastion}"
 BASTION_ZONE="${BASTION_ZONE:-us-east4-b}"
 DB_PRIVATE_IP="${DB_PRIVATE_IP:-}"
 DB_PORT="${DB_PORT:-5432}"
