@@ -29,7 +29,11 @@ def test_app_has_routes():
 
 
 def test_root_returns_welcome(client):
-    """GET / -> 200 with welcome message."""
+    """GET / -> 200 with welcome message and release metadata."""
     r = client.get("/")
     assert r.status_code == 200
-    assert r.json()["message"] == "Welcome to the JDM Garage API!"
+    assert r.json() == {
+        "message": "Welcome to the JDM Garage API!",
+        "channel": "stable",
+        "version": "1.0.0",
+    }

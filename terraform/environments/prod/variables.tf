@@ -66,7 +66,7 @@ variable "services_secondary_cidr" {
 variable "gke_cluster_name" {
   description = "Nombre del cluster GKE Autopilot"
   type        = string
-  default     = "godzilla-cluster"
+  default     = "godzilla-api-cluster"
 }
 
 variable "db_instance_name" {

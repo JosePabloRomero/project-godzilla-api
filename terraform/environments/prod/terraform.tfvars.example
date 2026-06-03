@@ -12,7 +12,7 @@ pods_secondary_cidr           = "10.20.0.0/16"
 services_secondary_range_name = "gke-services-range"
 services_secondary_cidr       = "10.30.0.0/20"
 
-gke_cluster_name       = "godzilla-cluster"
+gke_cluster_name       = "godzilla-api-cluster"
 
 db_instance_name       = "godzilla-postgres"
 db_name                = "godzilla_db"

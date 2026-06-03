@@ -1,18 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: godzilla-api
+  name: godzilla-api-stable
   labels:
     app: godzilla-api
+    version: stable
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: godzilla-api
+      version: stable
   template:
     metadata:
       labels:
         app: godzilla-api
+        version: stable
     spec:
       containers:
         - name: godzilla-api
@@ -21,15 +24,16 @@ spec:
           ports:
             - containerPort: 8000
           env:
+            - name: RELEASE_CHANNEL
+              value: "stable"
+            - name: APP_VERSION
+              value: "1.0.0"
             - name: APP_ENV
               value: "production"
+            - name: VISIBLE_CHANGE
+              value: "Stable release"
             - name: LOG_LEVEL
               value: "info"
-            - name: SENTRY_DSN
-              valueFrom:
-                secretKeyRef:
-                  name: sentry-secret
-                  key: SENTRY_DSN
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
