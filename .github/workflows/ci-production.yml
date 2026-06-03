@@ -166,8 +166,15 @@ jobs:
       - name: Deploy to GKE
         run: |
           IMAGE_TAG="${IMAGE_NAME}:${GITHUB_SHA}"
+          DEPLOY_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
           sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment-stable.yaml
           sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_TAG}|g" k8s/deployment-canary.yaml
+          sed -i "s|DEPLOY_DATE_PLACEHOLDER|${DEPLOY_DATE}|g" k8s/deployment-stable.yaml
+          sed -i "s|DEPLOY_DATE_PLACEHOLDER|${DEPLOY_DATE}|g" k8s/deployment-canary.yaml
+          sed -i "s|GIT_SHA_PLACEHOLDER|${GITHUB_SHA}|g" k8s/deployment-stable.yaml
+          sed -i "s|GIT_SHA_PLACEHOLDER|${GITHUB_SHA}|g" k8s/deployment-canary.yaml
+
           kubectl delete deployment godzilla-api --ignore-not-found=true
           kubectl apply -f k8s/
 
